@@ -48,10 +48,12 @@ app.post('/api/users/login', (req, res) => {
       return res.json({loginsuccess: false, message: "일치하는 유저가 없습니다."})
     }
 
+    // 비교
     user.comparePassword(req.body.password, (err, isMatch) => {
       if(!isMatch)
         return res.json({ loginsuccess: false, message: "비번 불일치"})
 
+      // 토큰
       user.generateToken((err, user) => {
         if(err) return res.status(400).send(err);
 
