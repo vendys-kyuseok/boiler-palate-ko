@@ -27,6 +27,9 @@ app.get('/', (req, res) => {
 app.get('/api/hello', (req, res) => {
   res.send('test test')
 })
+
+app.use('/api/users', require('./server/routes/users'));
+app.use('/api/video', require('./server/routes/video'));
  
 app.post('/api/users/register', (req, res) => {
     

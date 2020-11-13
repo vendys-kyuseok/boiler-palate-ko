@@ -6,10 +6,11 @@ import {
   Route
 } from "react-router-dom";
 
-import LandingPage from './components/views/LandingPage/LandingPage';
-import LoginPage from './components/views/LoginPage/LoginPage';
-import RegisterPage from './components/views/RegisterPage/RegisterPage';
-import Auth from './hoc/auth';
+import LandingPage from './views/LandingPage/LandingPage';
+import LoginPage from './views/LoginPage/LoginPage';
+import RegisterPage from './views/RegisterPage/RegisterPage';
+import Auth from '../hoc/auth';
+import VideoUploadPage from './views/VideoUpload/VideoUploadPage'
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
           <Route exact path="/login" component = {Auth(LoginPage, false)} />
            
           <Route exact path="/register" component = {Auth(RegisterPage, false)} />
+
+          <Route exact path="/video/upload" component = {Auth(VideoUploadPage, true)} />
         </Switch>
       </div>
     </Router>
