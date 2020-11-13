@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-//import reportWebVitals from './reportWebVitals';
+import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import 'antd/dist/antd.css'
+
 import { applyMiddleware, createStore } from 'redux';
 import premiseMiddleware from 'redux-promise';
 import ReduxTunk from 'redux-thunk';
@@ -27,5 +28,4 @@ ReactDOM.render(
   </Provider>,  document.getElementById('root')
 );
 
-
-ServiceWorker.unregister();
+reportWebVitals();
