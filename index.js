@@ -49,13 +49,13 @@ app.post('/api/users/login', (req, res) => {
 
   User.findOne({ email: req.body.email }, (err, user) => {
     if(!user) {
-      return res.json({loginsuccess: false, message: "일치하는 유저가 없습니다."})
+      return res.json({loginSuccess: false, message: "일치하는 유저가 없습니다."})
     }
 
     // 비교
     user.comparePassword(req.body.password, (err, isMatch) => {
       if(!isMatch)
-        return res.json({ loginsuccess: false, message: "비번 불일치"})
+        return res.json({ loginSuccess: false, message: "비번 불일치"})
 
       // 토큰
       user.generateToken((err, user) => {
@@ -64,7 +64,7 @@ app.post('/api/users/login', (req, res) => {
         //토큰을 저장한다. 쿠키 & 로컬스토리지
         res.cookie("x_auth", user.token)
         .status(200)
-        .json({loginsuccess: true, userId: user._id})
+        .json({loginSuccess: true, userId: user._id})
       })
     })
   })
@@ -90,9 +90,9 @@ app.get('/api/users/logout', auth, (req, res) => {
   User.findOneAndUpdate({_id: req.user._id},
       {token: ""},
       (err, user) => {
-          if(err) return res.json({ succecss: false, err});
+          if(err) return res.json({ success: false, err});
           return res.status(200).send({
-              succecss: true + '성공'
+              success: true + ' 성공'
           })
       })
 })
