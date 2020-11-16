@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const videoSchema = mongoose.Schema({
-    writer: {
+    writer: {// 업로드한 사람
         type:Schema.Types.ObjectId,
         ref: 'User'
     },

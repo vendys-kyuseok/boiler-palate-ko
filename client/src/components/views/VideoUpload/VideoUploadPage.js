@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Typography, Button, Form, message, Input, Icon} from 'antd';
+import {Typography, Button, Form, Input, Icon} from 'antd';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
-//import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Axios from 'axios';
 
 const { TextArea } = Input;  
@@ -21,27 +21,12 @@ const CategoryOpiton = [
     { value: 0, label: "Sports" },
 ]
 
-const onDrop = (files) => {
-    let formData = new FormData;
-    const config = {
-        header: {'content-type': 'multipart/form-data'}// 오류 방지
-    }
-    formData.append('file', files[0])
-
-    Axios.post('/api/video/uploadfiles', formData, config)
-        .then(response => {
-            if(response.data.success){
-                console.log(response.data)
-            } else {
-                alert('비디오 업로드 실패')
-            }
-        })
-}
-
 function VideoUploadPage() {
 
+    const user = useSelector(state => state.user);
     const [VideoTitle, setVideoTitle] = useState("");
     const [Description, setDescription] = useState("");
+
     const [Private, setPrivate] = useState(0)
     const [Category, setCategory] = useState("Film & Animation")
     const [FilePath, setFilePath] = useState("")
@@ -64,18 +49,6 @@ function VideoUploadPage() {
         setCategory(event.currentTarget.value)
     }// 변경 가능
 
-    const onSumbit = (e) => {
-        // const variables = {
-        //     writer: user.userData._id,
-        //     title: title,
-        //     description: Description,
-        //     privacy: privacy,
-        //     filePath: FilePath,
-        //     category: Categories,
-        //     duration: Duration,
-        //     thumbnail: Thumbnail
-        // }
-    }
 
     const onDrop = (files) => {
 
@@ -92,7 +65,7 @@ function VideoUploadPage() {
                     console.log(response.data)
 
                     let variable = {
-                        url: response.data.url,
+                        // url: response.data.url,
                         filePath: response.data.filePath,
                         fileName: response.data.fileName
                     }
@@ -101,9 +74,9 @@ function VideoUploadPage() {
                     axios.post('/api/video/thumbnail', variable)
                         .then(response => {
                             if (response.data.success) {
-                                console.log(response.datas)
+                                console.log(response.data)
                                 setDuration(response.data.fileDuration)
-                                setThumbnail(response.data.thumbsFilePath)
+                                setThumbnail(response.data.Thumbnail)
                             } else {
                                 alert('썸네일 실패');
                             }
@@ -115,6 +88,29 @@ function VideoUploadPage() {
 
     }
 
+    const onSumbit = (e) => {
+        e.preventDefault();
+
+        const variables = {
+            writer: user.userData._id,
+            title: VideoTitle,
+            description: Description,
+            privacy: Private,
+            filePath: FilePath,
+            category: Category,
+            duration: Duration,
+            thumbnail: Thumbnail,
+        }
+        Axios.post('/api/video/uploadVideo', variables)
+            .then(response => {
+                if(response.data.success){
+
+                } else {
+                    alert('no')
+                }
+            })
+    }
+
     return (
         <div style={{ maxWidth: '700px', margin: '2rem auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '2rem'}}>
@@ -123,7 +119,6 @@ function VideoUploadPage() {
             
             <Form onSumbit={onSumbit}>
                 <div style={{display: 'flex', justifyContent:'space-between'}}>
-
 
                     <Dropzone
                         onDrop={onDrop}
@@ -140,10 +135,15 @@ function VideoUploadPage() {
                         )}
                     </Dropzone>
 
-
-                    <div>
-                        <img src="" />
-                    </div>
+                    {/* Thumbnail 있을 경우 thumbnail 보여주기 */}
+                    {Thumbnail && (
+                        <div>
+                        <img
+                            src={`http://localhost:5000/${Thumbnail}`}  
+                            alt="thumbnail"
+                        />
+                        </div>
+                    )}
                 </div>
 
                 <br /><br />
@@ -182,7 +182,7 @@ function VideoUploadPage() {
 
                 <br /><br />
 
-                <Button type="primary" size="large" onClick>
+                <Button type="primary" size="large" onClick={onSumbit}>
                     onSumbit
                 </Button>
 

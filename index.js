@@ -19,6 +19,7 @@ mongoose.connect(config.mongoURI, {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(() => console.log('connect')).catch(err => console.log(err));
 
+app.use('./uploads/thumbnails', express.static('uploads'));
 
 app.get('/', (req, res) => {
   res.send('Hello World! ha')
