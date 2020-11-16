@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-//import axios from 'axios';
 import Axios from 'axios';
 import {withRouter} from 'react-router-dom';
 import { Card, Avatar, Col, Typography, Row } from 'antd';
@@ -10,12 +9,12 @@ const {Meta} = Card;
 function LandingPage(props) {
 
     // useEffect(() => {
-    //     axios.get('/api/hello')
+    //     Axios.get('/api/hello')
     //     .then(response => console.log(response))
     // }, [])
 
     // const onClickHendler = () => {
-    //     axios.get('/api/users/logout')
+    //     Axios.get('/api/users/logout')
     //     .then(response => {
     //         //console.log(response.data)
     //         if(response.data.success) {
@@ -49,7 +48,7 @@ function LandingPage(props) {
 
         return <Col lg={6} md={8} xs={24}>
             <div style={{ position: 'relative' }}>
-                <a href={`/video/${video._id}`} >   {/* 영상 하나의 다른 페이지 이동 */}
+                <a href={`/video/post/${video._id}`} >   {/* 영상 하나의 다른 페이지 이동 */}
                 <img style={{ width: '100%' }} alt="thumbnail" src={`http://localhost:5000/${video.thumbnail}`} />{/* 썸네일 */}
                 <div className=" duration"
                     style={{ bottom: 0, right:0, position: 'absolute', margin: '4px', 
@@ -67,8 +66,8 @@ function LandingPage(props) {
                 title={video.title}
             />
             <span>{video.writer.name} </span><br />
-            <span style={{ marginLeft: '3rem' }}> {video.views}</span>
-            - <span> {moment(video.createdAt).format("MMM Do YY")} </span>{/* 업데이트 한 날짜 */}
+            <span style={{ marginLeft: '3rem' }}> {video.views}</span> views -
+            <span> {moment(video.createdAt).format("MMM Do YY")} </span>{/* 업데이트 한 날짜 */}
         </Col>
 
     })

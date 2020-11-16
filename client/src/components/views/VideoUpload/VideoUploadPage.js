@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Typography, Button, Form, Input, Icon} from 'antd';
+import {Typography, Button, Form, Input} from 'antd';
+import { PlusOutlined } from "@ant-design/icons";
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import { useSelector } from "react-redux";
@@ -31,7 +32,7 @@ function VideoUploadPage() {
     const [Category, setCategory] = useState("Film & Animation")
     const [FilePath, setFilePath] = useState("")
     const [Duration, setDuration] = useState("")
-    const [Thumbnail, setThumbnail] = useState("")
+    const [thumbnailPath, setThumbnail] = useState("")
 
     const onTitleChange = (e) => {
         setVideoTitle(e.currentTarget.value)
@@ -56,6 +57,8 @@ function VideoUploadPage() {
         const config = {
             header: { 'content-type': 'multipart/form-data' }
         }
+        // content-type: 하나의 타입만 명시 할 수 있다.
+        // multipart/form-data: input, 동영상(이미지) 두 종류의 데이터를 함께 보내기 위한 설정
         console.log(files)
         formData.append("file", files[0])
 
@@ -76,7 +79,7 @@ function VideoUploadPage() {
                             if (response.data.success) {
                                 console.log(response.data)
                                 setDuration(response.data.fileDuration)
-                                setThumbnail(response.data.Thumbnail)
+                                setThumbnail(response.data.thumbnailPath)
                             } else {
                                 alert('썸네일 실패');
                             }
@@ -99,7 +102,7 @@ function VideoUploadPage() {
             filePath: FilePath,
             category: Category,
             duration: Duration,
-            thumbnail: Thumbnail,
+            thumbnail: thumbnailPath,
         }
         Axios.post('/api/video/uploadVideo', variables)
             .then(response => {
@@ -114,12 +117,13 @@ function VideoUploadPage() {
     return (
         <div style={{ maxWidth: '700px', margin: '2rem auto' }}>
             <div style={{ textAlign: 'center', marginBottom: '2rem'}}>
-                <Title level={2} > Upload Video</Title>
+                <Title> Upload Video</Title>
             </div>
             
             <Form onSumbit={onSumbit}>
                 <div style={{display: 'flex', justifyContent:'space-between'}}>
-
+                    {/* Dropzone */}
+                    {/* mutiple: false: 파일 한 개, true: 여러 개 */}
                     <Dropzone
                         onDrop={onDrop}
                         multiple={false}
@@ -130,16 +134,16 @@ function VideoUploadPage() {
                                 {...getRootProps()}>
 
                                 <input {...getInputProps()} />
-                                {/* <Icon type="plus" style={{ fontSize: '3rem' }} /> */}
+                                <PlusOutlined style={{ fontSize: "3rem" }} />
                             </div>
                         )}
                     </Dropzone>
 
-                    {/* Thumbnail 있을 경우 thumbnail 보여주기 */}
-                    {Thumbnail && (
+                    {/* 있을 경우 thumbnail 보여주기 */}
+                    {thumbnailPath !== "" && (
                         <div>
                         <img
-                            src={`http://localhost:5000/${Thumbnail}`}  
+                            src={`http://localhost:5000/${thumbnailPath}`}  
                             alt="thumbnail"
                         />
                         </div>
