@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {Typography, Button, Form, message, Input, Icon} from 'antd';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
+import Axios from 'axios';
 
 const { TextArea } = Input;  
 const { Title } = Typography;
@@ -20,12 +21,21 @@ const CategoryOpiton = [
     { value: 0, label: "Sports" },
 ]
 
-const onSumbit = (e) => {
+const onDrop = (files) => {
+    let formData = new FormData;
+    const config = {
+        header: {'content-type': 'multipart/form-data'}// 오류 방지
+    }
+    formData.append('file', files[0])
 
-}
-
-const onDrop = () => {
-
+    Axios.post('/api/video/uploadfiles', formData, config)
+        .then(response => {
+            if(response.data.success){
+                console.log(response.data)
+            } else {
+                alert('비디오 업로드 실패')
+            }
+        })
 }
 
 function VideoUploadPage() {
@@ -34,6 +44,9 @@ function VideoUploadPage() {
     const [Description, setDescription] = useState("");
     const [Private, setPrivate] = useState(0)
     const [Category, setCategory] = useState("Film & Animation")
+    const [FilePath, setFilePath] = useState("")
+    const [Duration, setDuration] = useState("")
+    const [Thumbnail, setThumbnail] = useState("")
 
     const onTitleChange = (e) => {
         setVideoTitle(e.currentTarget.value)
@@ -51,8 +64,21 @@ function VideoUploadPage() {
         setCategory(event.currentTarget.value)
     }// 변경 가능
 
+    const onSumbit = (e) => {
+        // const variables = {
+        //     writer: user.userData._id,
+        //     title: title,
+        //     description: Description,
+        //     privacy: privacy,
+        //     filePath: FilePath,
+        //     category: Categories,
+        //     duration: Duration,
+        //     thumbnail: Thumbnail
+        // }
+    }
 
     const onDrop = (files) => {
+
         let formData = new FormData();
         const config = {
             header: { 'content-type': 'multipart/form-data' }
@@ -61,30 +87,31 @@ function VideoUploadPage() {
         formData.append("file", files[0])
 
         axios.post('/api/video/uploadfiles', formData, config)
-        .then(response => {
-            if (response.data.success) {
+            .then(response => {
+                if (response.data.success) {
+                    console.log(response.data)
 
-                let variable = {
-                    filePath: response.data.filePath,
-                    fileName: response.data.fileName
+                    let variable = {
+                        url: response.data.url,
+                        filePath: response.data.filePath,
+                        fileName: response.data.fileName
+                    }
+                    setFilePath(response.data.filePath)
+
+                    axios.post('/api/video/thumbnail', variable)
+                        .then(response => {
+                            if (response.data.success) {
+                                console.log(response.datas)
+                                setDuration(response.data.fileDuration)
+                                setThumbnail(response.data.thumbsFilePath)
+                            } else {
+                                alert('썸네일 실패');
+                            }
+                        })
+                } else {
+                    alert('업로드 실패')
                 }
-                setFilePath(response.data.filePath)
-
-                axios.post('/api/video/thumbnail', variable)
-                    .then(response => {
-                        if (response.data.success) {
-                            setDuration(response.data.fileDuration)
-                            setThumbnail(response.data.thumbsFilePath)
-                        } else {
-                            alert('Failed to make the thumbnails');
-                        }
-                    })
-
-
-            } else {
-                alert('실패')
-            }
-        })
+            })
 
     }
 

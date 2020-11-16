@@ -1,20 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-// var ffmpeg = require('fluent-ffmpeg');
+var ffmpeg = require('fluent-ffmpeg');
 
 // const { Video } = require("");
 // const { Subscriber } = require("../models/Subscriber");
 const { auth } = require("../middleware/auth");
 
+// 옵션 역할??
 var storage = multer.diskStorage({
-    // 파일을 어디다 저장할거냐
+    // destination: 파일을 어디다 저장할거냐
     destination: (req, file, cb) => {
         cb(null, 'uploads/')
     },
+    // 저장시 파일 이름
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}_${file.originalname}`)
     },
+    // 파일 확장자
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname)
         if (ext !== '.mp4') {
@@ -38,17 +41,20 @@ router.post("/uploadfiles", (req, res) => {
         if (err) {
             return res.json({ success: false, err })
         }
+        // 파일 이름, 결로 등
         return res.json({ success: true, filePath: res.req.file.path, fileName: res.req.file.filename })
     })
 
 });
 
 
+// 썸네일 생성, 비디오 러닝타임 가져오기
 router.post("/thumbnail", (req, res) => {
 
-    let thumbsFilePath ="";
+    let filePath ="";
     let fileDuration ="";
 
+    // 비디오 정보 가져오기
     ffmpeg.ffprobe(req.body.filePath, function(err, metadata){
         console.dir(metadata);
         console.log(metadata.format.duration);
@@ -56,26 +62,25 @@ router.post("/thumbnail", (req, res) => {
         fileDuration = metadata.format.duration;
     })
 
-
-    ffmpeg(req.body.filePath)
+    ffmpeg(req.body.filePath)// 클라이언트에서온 비디오 저장경로
         .on('filenames', function (filenames) {
             console.log('Will generate ' + filenames.join(', '))
-            thumbsFilePath = "uploads/thumbnails/" + filenames[0];
+            filePath = "uploads/thumbnails/" + filenames[0];
         })
+        // 생성 후
         .on('end', function () {
             console.log('Screenshots taken');
-            return res.json({ success: true, thumbsFilePath: thumbsFilePath, fileDuration: fileDuration})
+            return res.json({ success: true, url: filePath, fileDuration: fileDuration})
         })
+        // 썸네일 옵션
         .screenshots({
-            count: 3,
+            count: 2,
             folder: 'uploads/thumbnails',
             size:'320x240',
             filename:'thumbnail-%b.png'
         });
 
 });
-
-
 
 
 router.get("/getVideos", (req, res) => {
@@ -137,3 +142,4 @@ router.post("/getSubscriptionVideos", (req, res) => {
 });
 
 module.exports = router;
+
