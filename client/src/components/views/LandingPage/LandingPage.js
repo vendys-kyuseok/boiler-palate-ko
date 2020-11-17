@@ -46,9 +46,9 @@ function LandingPage(props) {
         var minutes = Math.floor(video.duration / 60);
         var seconds = Math.floor(video.duration - minutes * 60);
 
-        return <Col lg={6} md={8} xs={24}>
+        return <Col key={index} lg={6} md={8} xs={24}>
             <div style={{ position: 'relative' }}>
-                <a href={`/video/post/${video._id}`} >   {/* 영상 하나의 다른 페이지 이동 */}
+                <a href={`/video/${video._id}`} >   {/* 영상 하나의 다른 페이지 이동 (아이디 값으로) */}
                 <img style={{ width: '100%' }} alt="thumbnail" src={`http://localhost:5000/${video.thumbnail}`} />{/* 썸네일 */}
                 <div className=" duration"
                     style={{ bottom: 0, right:0, position: 'absolute', margin: '4px', 

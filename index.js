@@ -19,8 +19,6 @@ mongoose.connect(config.mongoURI, {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(() => console.log('connect')).catch(err => console.log(err));
 
-app.use('./uploads/thumbnails', express.static('uploads'));
-
 app.get('/', (req, res) => {
   res.send('Hello World! ha')
 })
@@ -29,9 +27,24 @@ app.get('/api/hello', (req, res) => {
   res.send('test test')
 })
 
-app.use('/api/users', require('./server/routes/users'));
+//app.use('/api/users', require('./server/routes/users'));
 app.use('/api/video', require('./server/routes/video'));
- 
+
+
+app.use('/uploads', express.static('uploads'));
+
+if (process.env.NODE_ENV === "production") {
+
+  // Set static folder
+  app.use(express.static("client/build"));
+
+  // index.html for all page routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
+
+
 app.post('/api/users/register', (req, res) => {
     
     // 회원가입 할때 필요한 client에서 가져와 db에 저장

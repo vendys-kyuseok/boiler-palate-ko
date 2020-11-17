@@ -44,7 +44,7 @@ router.post("/uploadVideo", (req, res) => {
     const video = new Video(req.body);
 
     video.save((err, doc) => {
-        if(err) return res.json({success: false, err})
+        if(err) return res.status(400).json({success: false, err})
         res.status(200).json({success: true})
     })
 });
@@ -60,19 +60,22 @@ router.get("/getVideos", (req, res) => {
         })
 });
 
-// router.post("/getVideo", (req, res) => {
 
-//     Video.findOne({ "_id" : req.body.videoId })
-//     .populate('writer')
-//     .exec((err, video) => {
-//         if(err) return res.status(400).send(err);
-//         res.status(200).json({ success: true, video })
-//     })
-// });
+router.post("/getVideo", (req, res) => {
+
+    Video.findOne({ "_id" : req.body.videoId })
+    .populate('writer')// ObjectID가 속해있는 모델의 정보를 모두 가져옴.
+    .exec((err, video) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({ success: true, video })
+    })
+});
+
 
 
 // 썸네일 생성, 비디오 러닝타임 가져오기
 router.post("/thumbnail", (req, res) => {
+    console.log(req.body.url)
 
     let thumbsFilePath ="";
     let fileDuration ="";
@@ -97,15 +100,14 @@ router.post("/thumbnail", (req, res) => {
         })
         // 썸네일 옵션
         .screenshots({
-            count: 2,
+            count: 1,
             folder: 'uploads/thumbnails',
             size:'320x240',
+            // %b: input basename (입력한 파일 이름, 확장자 명 제외)
             filename:'thumbnail-%b.png'
         });
 
 });
-
-
 
 module.exports = router;
 

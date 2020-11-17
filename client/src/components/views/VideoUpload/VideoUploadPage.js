@@ -32,7 +32,7 @@ function VideoUploadPage() {
     const [Category, setCategory] = useState("Film & Animation")
     const [FilePath, setFilePath] = useState("")
     const [Duration, setDuration] = useState("")
-    const [thumbnailPath, setThumbnail] = useState("")
+    const [thumbsFilePath, setThumbnail] = useState("")
 
     const onTitleChange = (e) => {
         setVideoTitle(e.currentTarget.value)
@@ -79,7 +79,7 @@ function VideoUploadPage() {
                             if (response.data.success) {
                                 console.log(response.data)
                                 setDuration(response.data.fileDuration)
-                                setThumbnail(response.data.thumbnailPath)
+                                setThumbnail(response.data.thumbsFilePath)// 오류 원인
                             } else {
                                 alert('썸네일 실패');
                             }
@@ -94,6 +94,16 @@ function VideoUploadPage() {
     const onSumbit = (e) => {
         e.preventDefault();
 
+        if (user.userData && !user.userData.isAuth) {
+            return alert('Please Log in First')
+        }
+
+        if (VideoTitle === "" || Description === "" ||
+            Category === "" || FilePath === "" ||
+            Duration === "" || thumbsFilePath === "") {
+            return alert('Please first fill all the fields')
+        }
+
         const variables = {
             writer: user.userData._id,
             title: VideoTitle,
@@ -102,7 +112,7 @@ function VideoUploadPage() {
             filePath: FilePath,
             category: Category,
             duration: Duration,
-            thumbnail: thumbnailPath,
+            thumbnail: thumbsFilePath,
         }
         Axios.post('/api/video/uploadVideo', variables)
             .then(response => {
@@ -139,11 +149,11 @@ function VideoUploadPage() {
                         )}
                     </Dropzone>
 
-                    {/* 있을 경우 thumbnail 보여주기 */}
-                    {thumbnailPath !== "" && (
+                    {/* 있을 경우 Thumbnail 보여주기 */}
+                    {thumbsFilePath !== "" && (
                         <div>
                         <img
-                            src={`http://localhost:5000/${thumbnailPath}`}  
+                            src={`http://localhost:5000/${thumbsFilePath}`}  
                             alt="thumbnail"
                         />
                         </div>
