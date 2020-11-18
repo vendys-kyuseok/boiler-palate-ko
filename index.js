@@ -29,6 +29,7 @@ app.get('/api/hello', (req, res) => {
 
 //app.use('/api/users', require('./server/routes/users'));
 app.use('/api/video', require('./server/routes/video'));
+app.use('/api/subscribe', require('./server/routes/subscribe'));
 
 
 app.use('/uploads', express.static('uploads'));

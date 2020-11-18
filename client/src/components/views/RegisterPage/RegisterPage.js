@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {registerUser} from '../../../_actions/user_action'
 import {withRouter} from 'react-router-dom';
+import styled from 'styled-components';
 
 function RegisterPage(props) {
     const dispatch = useDispatch();
@@ -50,9 +51,7 @@ function RegisterPage(props) {
             })
     }
     return (
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',
-        width: '100%', height: '100vh'}}>
-            
+        <Div>
             <form style={{display: 'flex', flexDirection: 'column'}}
                 onSubmit={onSubmitHandler}
             >
@@ -60,7 +59,7 @@ function RegisterPage(props) {
                 <input type="email" value={Email} onChange={onEmailHandler} />
 
                 <label>Name</label>
-                <input type="password" value={Name} onChange={onNameHandler} />
+                <input type="text" value={Name} onChange={onNameHandler} />
 
                 <label>Password</label>
                 <input type="password" value={Password} onChange={onPasswordHandler} />
@@ -70,12 +69,19 @@ function RegisterPage(props) {
 
                 <br />
                 <button type="submit">
-                    LOGIN
+                    REGISTER
                 </button>
             </form>
-
-        </div>
+        </Div>
     )
 }
+
+const Div = styled.div`
+    display: flex;
+    justify-Content: center; 
+    align-Items: center;
+    width: 100%;
+    height: 100vh;
+`
 
 export default withRouter(RegisterPage);

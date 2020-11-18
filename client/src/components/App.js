@@ -12,13 +12,14 @@ import RegisterPage from './views/RegisterPage/RegisterPage';
 import Auth from '../hoc/auth';
 import VideoUploadPage from './views/VideoUpload/VideoUploadPage';
 import VideoDetailPage from './views/VideoDetailPage/VideoDetailPage';
-import NavBar from "./views/Nav/Nav";
+import SubscriptionPage from './views/SubscriptionPage/SubscriptionPage';
+import Nav from './views/NavBar/NavBar'
 
 function App() {
   return (
     <Router>
-      <div>
-        <NavBar/>
+      <Nav />
+      <div style={{paddingTop: '75px',  minHeight: 'calc(100vh - 80px)'}}>
         <Switch>
           <Route exact path="/" component = {Auth(LandingPage, null, true)} />
           
@@ -30,6 +31,8 @@ function App() {
 
           {/* 비디오 아이들 통해 페이지 이동 */}
           <Route exact path="/video/:videoId" component = {Auth(VideoDetailPage, null)} />
+
+          <Route exact path="/Subscription" component = {Auth(SubscriptionPage, null)} />
         </Switch>
       </div>
     </Router>

@@ -4,7 +4,7 @@ const multer = require('multer');
 var ffmpeg = require('fluent-ffmpeg');
 
 const { Video } = require('../models/Video');
-// const { Subscriber } = require("../models/Subscriber");
+const { Subscriber } = require("../models/Subscriber");
 
 // 옵션 역할??
 var storage = multer.diskStorage({
@@ -71,6 +71,28 @@ router.post("/getVideo", (req, res) => {
     })
 });
 
+router.post("/getSubscriptionVideos", (req, res) => {
+
+    // 자신의 아이디를 가지고 구독한 사람들을 찾는다
+    Subscriber.find({'userFrom': req.body.userFrom})
+    .exec((err, subscribers) => {
+        if(err) return res.status(400).send(err);
+
+        let subscribedUser = [];
+
+        subscribers.map((subscriber, i) => {
+            subscribedUser.push(subscriber.userTo);
+        })
+
+        // 찾은 사람들을 찾아 그 사람의 비디오를 불러온다
+
+        Video.find({writer : {$in: subscribedUser}})
+        .populate('writer').exec((err, videos) => {
+            if(err) return res.status(400).send(err);
+            res.status(200).json({success: true, videos})
+        })
+    })
+});
 
 
 // 썸네일 생성, 비디오 러닝타임 가져오기

@@ -3,6 +3,8 @@ import Axios from 'axios';
 import {withRouter} from 'react-router-dom';
 import { Card, Avatar, Col, Typography, Row } from 'antd';
 import moment from 'moment';
+import styled from 'styled-components'
+
 const {Title} = Typography;
 const {Meta} = Card;
 
@@ -50,13 +52,9 @@ function LandingPage(props) {
             <div style={{ position: 'relative' }}>
                 <a href={`/video/${video._id}`} >   {/* 영상 하나의 다른 페이지 이동 (아이디 값으로) */}
                 <img style={{ width: '100%' }} alt="thumbnail" src={`http://localhost:5000/${video.thumbnail}`} />{/* 썸네일 */}
-                <div className=" duration"
-                    style={{ bottom: 0, right:0, position: 'absolute', margin: '4px', 
-                    color: '#fff', backgroundColor: 'rgba(17, 17, 17, 0.8)', opacity: 0.8, 
-                    padding: '2px 4px', borderRadius:'2px', letterSpacing:'0.5px', fontSize:'12px',
-                    fontWeight:'500', lineHeight:'12px' }}>
+                <Duration>
                     <span>{minutes} : {seconds}</span> {/* 파일 시간 */}
-                </div>
+                </Duration>
                 </a>
             </div><br />
             <Meta
@@ -85,5 +83,25 @@ function LandingPage(props) {
         </div>
     )
 }
+
+const Duration = styled.div`
+bottom: 0;
+right: 0;
+position: absolute;
+margin: 4px;
+                    
+color: #fff;
+background-Color: rgba(17, 17, 17, 0.8);
+opacity: 0.8;
+                    
+padding: 2px 4px; 
+border-Radius: 2px;
+letter-Spacing:0.5px;
+font-Size: 12px;
+                    
+font-Weight: 500;
+line-Height: 12px;
+`
+
 
 export default withRouter(LandingPage);
