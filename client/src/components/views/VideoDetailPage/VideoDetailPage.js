@@ -1,14 +1,16 @@
-import React, {useEffect, useState, useSelector} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useSelector} from 'react-redux';
 import {List, Row, Col, Avatar} from 'antd';
 import axios from 'axios';
 
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
+import Comment from './Sections/Comment';
 
 function VideoDetailPage(props) {
-
     const videoId = props.match.params.videoId;
     const [video, setVideo] = useState([]); 
+    const user = useSelector(state => state.user);
 
     useEffect(() => {
         const variable = {videoId: videoId};
@@ -16,7 +18,7 @@ function VideoDetailPage(props) {
         axios.post('/api/video/getVideo', variable)
             .then(response => {
                 if (response.data.success) {
-                    console.log(response.data.video)
+                    //console.log(response.data.video)
                     setVideo(response.data.video)
                 } else {
                     alert('Failed to get video Info')
@@ -26,12 +28,11 @@ function VideoDetailPage(props) {
 
     // Video.writer 로딩 여부에 따라 렌더링을 다르게 설정
     if(video.writer){
-        console.log('테스트이어유')
+        console.log(user)
+        console.log(video.writer._id)  // 아이디 값
 
-        const subscribeButton = video.writer._id !==  localStorage.getItem('userId') &&
-            <Subscribe userTo={video.writer._id} userFrom={localStorage.getItem('userId')}/>
-
-        console.log(subscribeButton)
+        const subscribeButton = video.writer._id !== user.userData._id && <Subscribe userTo={video.writer._id} userFrom={localStorage.getItem('ObjectId')} />
+        //console.log(subscribeButton)
 
         return (
             <Row gutter={[16, 16]}>
@@ -51,7 +52,8 @@ function VideoDetailPage(props) {
                             />
     
                         </List.Item>
-    
+                        {/* Comment */}
+                        <Comment/>
                     </div>
                 </Col>
     

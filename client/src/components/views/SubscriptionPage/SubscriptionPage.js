@@ -7,17 +7,18 @@ import styled from 'styled-components'
 
 const {Title} = Typography;
 const {Meta} = Card;
-// const {Subscriber} = require('../')
 
-function SubscriptionPage(props) {
+
+function SubscriptionPage() {
 
     const [Video, setVideo] = useState([]);
 
     useEffect(() => {
 
         const subscriptionVariables = {
-            userFrom : localStorage.getItem('userId')
+            userFrom : JSON.parse(localStorage.getItem("userId"))
         }
+        console.log(subscriptionVariables)
 
         Axios.post('/api/video/getSubscriptionVideos', subscriptionVariables)
             .then(response => {

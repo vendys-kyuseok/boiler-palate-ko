@@ -8,26 +8,7 @@ import styled from 'styled-components'
 const {Title} = Typography;
 const {Meta} = Card;
 
-function LandingPage(props) {
-
-    // useEffect(() => {
-    //     Axios.get('/api/hello')
-    //     .then(response => console.log(response))
-    // }, [])
-
-    // const onClickHendler = () => {
-    //     Axios.get('/api/users/logout')
-    //     .then(response => {
-    //         //console.log(response.data)
-    //         if(response.data.success) {
-    //             props.history.push('/login')
-    //         } else {
-    //             alert('로그아웃 실패')
-    //         }
-    //     })
-    // }
-    // ---------------------------------------------- //
-
+function LandingPage() {
 
     const [Video, setVideo] = useState([]);
 
@@ -67,7 +48,6 @@ function LandingPage(props) {
             <span style={{ marginLeft: '3rem' }}> {video.views}</span> views -
             <span> {moment(video.createdAt).format("MMM Do YY")} </span>{/* 업데이트 한 날짜 */}
         </Col>
-
     })
  
     return (
@@ -78,8 +58,6 @@ function LandingPage(props) {
             <Row gutter={16}>
                 {renderCards}
             </Row>
-
-            {/* <button onClick={onClickHendler}>Logout</button> */}
         </div>
     )
 }

@@ -12,7 +12,11 @@ router.post('/subscribeNumber', (req, res) => {
 })
 
 router.post('/subscribed', (req, res) => {
-    Subscriber.find({'userTo': req.body.userTo, 'userFrom': req.body.userFrom})
+    // userTo: 해당 동영상 업로드한 유저
+    // userFrom: 현재 로그인 유저
+    const { userTo, userFrom } = req.body;
+
+    Subscriber.find({ userTo, userFrom })
     .exec((err, subscribe) => {
         if(err) return res.status(400).send(err);
 
@@ -26,8 +30,9 @@ router.post('/subscribed', (req, res) => {
 })  
 
 router.post("/unSubscribe", (req, res) => {
+    const { userTo, userFrom } = req.body;
 
-    Subscriber.findOneAndDelete({userTo:req.body.userTo, userFrom:req.body.userFrom})
+    Subscriber.findOneAndDelete({ userTo, userFrom })
     .exec((err, doc) => {
         if(err) return res.status(400).json({success: false, err})
         res.status(200).json({success:true, doc})
@@ -38,13 +43,15 @@ router.post("/unSubscribe", (req, res) => {
 
 router.post("/subscribe", (req, res) => {
     // userTo, userFrom의 정보를 저장
-    const subscribe = new Subscriber(req.body);
+    const { userTo, userFrom } = req.body;
+
+    const subscribe = new Subscriber({ userTo, userFrom });
 
     //console.log(subscribe)
 
     subscribe.save((err, doc) => {
         if(err) return res.json({ success: false, err })
-        return res.status(200).json({ success: true })
+        return res.status(200).json({ success: true, doc })
     })
 
 });
