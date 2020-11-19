@@ -2,14 +2,13 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const CommentSchema = mongoose.Schema({
-
-     // writer id
-     writer: {
+    // writer id
+    writer: {
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
     // video id
-    videoId: {
+    postId: {
         type: Schema.Types.ObjectId,
         ref: 'Video',
     },

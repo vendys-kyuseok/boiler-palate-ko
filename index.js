@@ -8,9 +8,6 @@ const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 const bodyParser = require('body-parser');
-const {User} = require('./server/models/User');
-const {auth} = require('./server/middleware/auth');
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -19,17 +16,13 @@ mongoose.connect(config.mongoURI, {
     useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(() => console.log('connect')).catch(err => console.log(err));
 
-app.get('/', (req, res) => {
-  res.send('Hello World! ha')
-})
-
-app.get('/api/hello', (req, res) => {
-  res.send('test test')
-})
-
 app.use('/api/users', require('./server/routes/users'));
 app.use('/api/video', require('./server/routes/video'));
 app.use('/api/subscribe', require('./server/routes/subscribe'));
+app.use('/api/comment', require('./server/routes/comment'));
+app.use('/api/like', require('./server/routes/like'));
+
+
 
 
 app.use('/uploads', express.static('uploads'));
