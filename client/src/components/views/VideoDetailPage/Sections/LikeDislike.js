@@ -1,11 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Tooltip} from 'antd';
-import { PlusOutlined } from "@ant-design/icons";
+import {Tooltip } from 'antd';
+import {PlusOutlined} from "@ant-design/icons";
 import Axios from 'axios';
 
 function LikeDislike (props) {
 
-    const variables = {}
+    const [Likes, setLikes] = useState(0)
+    const [Dislikes, setDislikes] = useState(0)
+    const [LikeAction, setLikeAction] = useState(null)
+    const [DislikeAction, setDislikeAction] = useState(null)
+
+    let variables = {}
 
     if(props.video){
         variables = {video: props.videoId, userId: props.userId}
@@ -13,18 +18,16 @@ function LikeDislike (props) {
         variables = {commentId: props.commentId, userId: props.userId}
     }
 
-    const [Likes, setLikes] = useState(0)
-    const [Dislikes, setDislikes] = useState(0)
-    const [LikeAction, setLikeAction] = useState(null)
-    const [DislikeAction, setDislikeAction] = useState(null)
-
     useEffect(() => {
         Axios.post('/api/like/getLikes', variables)
         .then(response => {
+
+            console.log('getLikes',response.data)
+
             if(response.data.success){
-                //얼마나 많은 좋아요를 받았는지
+                //내가 좋아요를 많이 눌렀는지
                 setLikes(response.data.likes.length)
-                //내가 이미 좋아요를 눌렇는지
+                
                 response.data.likes.map(like => {
                     if(like.userId === props.userId){
                         setLikeAction('liked')
@@ -34,24 +37,87 @@ function LikeDislike (props) {
                 alert('실패')
             }
         })
+       
+        Axios.post('/api/like/getDislikes', variables)
+        .then(response => {
+            console.log('getDislike',response.data)
+            if(response.data.success){
+                //내가 싫어요를 많이 눌렀는지
+                setDislikes(response.data.dislikes.length)
 
-        useEffect(() => {
-            Axios.post('/api/like/getDislikes', variables)
-            .then(response => {
-                if(response.data.success){
-                    //얼마나 많은 싫어요를 받았는지
-                    setDislikes(response.data.dislikes.length)
-                    //내가 이미 싫어요를 눌렇는지
-                    response.data.dislikes.map(dislike => {
-                        if(dislike.userId === props.userId){
-                            setDislikeAction('disliked')
-                        }
-                    })
-                }else{
-                    alert('실패')
-                }
-            })
+                response.data.dislikes.map(dislike => {
+                    if(dislike.userId === props.userId){  
+                        setDislikeAction('disliked')
+                    }
+                })
+            }else{
+                alert('실패')
+            }
+        })
     }, []);
+    
+
+// 좋아요 버튼 기능
+    const onLike = () => {
+        if (LikeAction === null) {
+            Axios.post('/api/like/upLike', variables)
+                .then(response => {
+                    if (response.data.success) {
+                        setLikes(Likes + 1)
+                        setLikeAction('liked')
+                        if (DislikeAction !== null) {
+                            setDislikeAction(null)
+                            setDislikes(Dislikes - 1)
+                        }
+                    } else {
+                        alert('실패')
+                    }
+                })
+        } else {
+            Axios.post('/api/like/unLike', variables)
+                .then(response => {
+                    if (response.data.success) {
+                        setLikes(Likes - 1)
+                        setLikeAction(null)
+                    } else {
+                        alert('실패')
+                    }
+                })
+        }
+    }
+
+// 싫어요 버튼 기능
+    const onDisLike = () => {
+        if (DislikeAction !== null) {
+
+            Axios.post('/api/like/unDisLike', variables)
+                .then(response => {
+                    if (response.data.success) {
+                        setDislikes(Dislikes - 1)
+                        setDislikeAction(null)
+
+                    } else {
+                        alert('실패')
+                    }
+                })
+        } else {
+            Axios.post('/api/like/upDisLike', variables)
+                .then(response => {
+                    if (response.data.success) {
+                        setDislikes(Dislikes + 1)
+                        setDislikeAction('disliked')
+
+                        if(LikeAction !== null ) {
+                            setLikeAction(null)
+                            setLikes(Likes - 1)
+                        }
+                    } else {
+                        alert('실패')
+                    }
+                })
+        }
+    }
+
 
     return(
         <div>
@@ -59,7 +125,7 @@ function LikeDislike (props) {
                 <Tooltip title="Like">
                     <PlusOutlined type='like'
                         theme={LikeAction === "liked" ? "filled" : "outlined"}
-                        onClick
+                        onClick={onLike}
                     />
                 </Tooltip>
                 <span style={{paddingLeft: '8px', cursor: 'auto'}}>{Likes}</span>
@@ -69,7 +135,7 @@ function LikeDislike (props) {
                 <Tooltip title="Dislike">
                     <PlusOutlined type='dislike'
                         theme={DislikeAction === "disliked" ? "filled" : "outlined"}
-                        onClick
+                        onClick={onDisLike}
                     />
                 </Tooltip>
                 <span style={{paddingLeft: '8px', cursor: 'auto'}}>{Dislikes}</span>

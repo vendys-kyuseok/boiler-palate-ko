@@ -30,7 +30,7 @@ function App() {
 
           <Route exact path="/video/upload" component = {Auth(VideoUploadPage, true)} />
 
-          {/* 비디오 아이들 통해 페이지 이동 */}
+          {/* 비디오 아이디 통해 페이지 이동 */}
           <Route exact path="/video/:videoId" component = {Auth(VideoDetailPage, null)} />
 
           <Route exact path="/Subscription" component = {Auth(SubscriptionPage, null)} />
@@ -53,7 +53,6 @@ function App() {
 //         nickname: 'kyuseok',
 //         isAdmin: 'true'
 //     }
-
 //     return(
 //         <AContext.Provider value={user}>
 //             <div>
